@@ -17,68 +17,16 @@ def get_weather_data(hass):
     latitude = hass.args.get("latitude")
     longitude = hass.args.get("longitude")
     api = hass.args.get("open_weather_api")
-
     fullUrl = f"{BASE_URL}lat={latitude}&lon={longitude}&appid={api}&units=metric"
     data = requests.get(fullUrl)
     status = data.status_code
-    hass.log(f"Get weather data fullUrl: {fullUrl}")
+    hass.log("Getting weather data")
+    hass.log(f"Get weather data fullUrl: {fullUrl}", level="DEBUG")
     hass.log(f"Status code: {status}")
     return data.json()
 
-
-def daily_entities(hass, data):
-    daily_data = data["daily"]
-    for day in range(0, 8):
-        rain = daily_data[day].get("rain", "No Data")
-        if rain == "No Data":
-            hass.log(f"No Rain data found for {convert_time_date_only(daily_data[day]['dt'])} using default message", level="DEBUG")
-
-        # TODO Need to add snow data
-
-        try:
-            hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
-                "friendly_name": convert_time_date_only(daily_data[day]["dt"]),
-                "unit_of_measurement": "°C",
-                "Sunrise": convert_time(daily_data[day]["sunrise"]),
-                "Sunset": convert_time(daily_data[day]["sunset"]),
-                "Moonrise": convert_time(daily_data[day]["moonrise"]),
-                "Moonset": convert_time(daily_data[day]["moonset"]),
-                "Moon phase": daily_data[day]["moon_phase"],
-                "Summary": daily_data[day]["summary"],
-                "Temp - Day": daily_data[day]["temp"]["day"],
-                "Temp - Min": daily_data[day]["temp"]["min"],
-                "Temp - Max": daily_data[day]["temp"]["max"],
-                "Temp - Night": daily_data[day]["temp"]["night"],
-                "Temp - Eve": daily_data[day]["temp"]["eve"],
-                "Temp - Morn": daily_data[day]["temp"]["morn"],
-                "Feels like - Day": daily_data[day]["feels_like"]["day"],
-                "Feels like - Night": daily_data[day]["feels_like"]["night"],
-                "Feels like - Eve": daily_data[day]["feels_like"]["eve"],
-                "Feels like - Morn": daily_data[day]["feels_like"]["morn"],
-                "Pressure": daily_data[day]["pressure"],
-                "Humidity": daily_data[day]["humidity"],
-                "Dew point": daily_data[day]["dew_point"],
-                "Wind speed": daily_data[day]["wind_speed"],
-                "Wind degrees": daily_data[day]["wind_deg"],
-                "Wind gust": daily_data[day]["wind_gust"],
-                "Weather - ID": daily_data[day]["weather"][0]["id"],
-                "Weather - Main": daily_data[day]["weather"][0]["main"],
-                "Weather - Description": daily_data[day]["weather"][0]["description"],
-                "Clouds": daily_data[day]["clouds"],
-                "POP": daily_data[day]["pop"],
-                "Rain": rain,
-                "UVI": daily_data[day]["uvi"],
-            })
-        except KeyError as e:
-            missing_key = str(e).strip("'")
-            hass.log(f"KeyError: Missing key '{missing_key}' in daily data for "
-                     f"{convert_time_date_only(daily_data[day]['dt'])}", level="ERROR")
-            hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
-                "friendly_name": f"{convert_time_date_only(daily_data[day]['dt'])} E",
-                "unit_of_measurement": "°C",
-            })
-
-    hass.log("Daily entities created / updated")
+def current_entities(hass, data):
+    pass
 
 def hourly_entities(hass, data):
     hourly_data = data["hourly"]
@@ -128,3 +76,57 @@ def hourly_entities(hass, data):
 
     hass.log("Hourly entities created / updated")
 
+def daily_entities(hass, data):
+    daily_data = data["daily"]
+    for day in range(0, 8):
+        rain = daily_data[day].get("rain", "No Data")
+        if rain == "No Data":
+            hass.log(f"No Rain data found for {convert_time_date_only(daily_data[day]['dt'])} using default message", level="DEBUG")
+
+        # TODO Need to add snow data
+        # Need to check other missing entries
+
+        try:
+            hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
+                "friendly_name": convert_time_date_only(daily_data[day]["dt"]),
+                "unit_of_measurement": "°C",
+                "Sunrise": convert_time(daily_data[day]["sunrise"]),
+                "Sunset": convert_time(daily_data[day]["sunset"]),
+                "Moonrise": convert_time(daily_data[day]["moonrise"]),
+                "Moonset": convert_time(daily_data[day]["moonset"]),
+                "Moon phase": daily_data[day]["moon_phase"],
+                "Summary": daily_data[day]["summary"],
+                "Temp - Day": daily_data[day]["temp"]["day"],
+                "Temp - Min": daily_data[day]["temp"]["min"],
+                "Temp - Max": daily_data[day]["temp"]["max"],
+                "Temp - Night": daily_data[day]["temp"]["night"],
+                "Temp - Eve": daily_data[day]["temp"]["eve"],
+                "Temp - Morn": daily_data[day]["temp"]["morn"],
+                "Feels like - Day": daily_data[day]["feels_like"]["day"],
+                "Feels like - Night": daily_data[day]["feels_like"]["night"],
+                "Feels like - Eve": daily_data[day]["feels_like"]["eve"],
+                "Feels like - Morn": daily_data[day]["feels_like"]["morn"],
+                "Pressure": daily_data[day]["pressure"],
+                "Humidity": daily_data[day]["humidity"],
+                "Dew point": daily_data[day]["dew_point"],
+                "Wind speed": daily_data[day]["wind_speed"],
+                "Wind degrees": daily_data[day]["wind_deg"],
+                "Wind gust": daily_data[day]["wind_gust"],
+                "Weather - ID": daily_data[day]["weather"][0]["id"],
+                "Weather - Main": daily_data[day]["weather"][0]["main"],
+                "Weather - Description": daily_data[day]["weather"][0]["description"],
+                "Clouds": daily_data[day]["clouds"],
+                "POP": daily_data[day]["pop"],
+                "Rain": rain,
+                "UVI": daily_data[day]["uvi"],
+            })
+        except KeyError as e:
+            missing_key = str(e).strip("'")
+            hass.log(f"KeyError: Missing key '{missing_key}' in daily data for "
+                     f"{convert_time_date_only(daily_data[day]['dt'])}", level="ERROR")
+            hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
+                "friendly_name": f"{convert_time_date_only(daily_data[day]['dt'])} E",
+                "unit_of_measurement": "°C",
+            })
+
+    hass.log("Daily entities created / updated")
