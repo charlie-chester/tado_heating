@@ -4,12 +4,12 @@ from datetime import datetime, timedelta
 import weather_api as weather
 
 ROOMS = {
-    "conservatory": {"morning": 15, "day": 18, "sun_correction": 2},
-    "dining_room": {"morning": 15, "day": 18, "sun_correction": 2},
-    "lounge": {"morning": 16, "day": 18, "sun_correction": 0},
-    "office": {"morning": 16, "day": 17, "sun_correction": 0},
-    "bedroom": {"morning": 16, "day": 17, "sun_correction": 0},
-    "pink_room": {"morning": 16, "day": 17, "sun_correction": 0},
+    "conservatory": {"morning": 17, "day": 18, "sun_correction": 2},
+    "dining_room": {"morning": 17, "day": 18, "sun_correction": 2},
+    "lounge": {"morning": 17, "day": 18, "sun_correction": 0},
+    "office": {"morning": 17, "day": 17, "sun_correction": 0},
+    "bedroom": {"morning": 17, "day": 17, "sun_correction": 0},
+    "pink_room": {"morning": 17, "day": 17, "sun_correction": 0},
 }
 
 OUTSIDE_TEMP = 12

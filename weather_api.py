@@ -35,11 +35,11 @@ def hourly_entities(hass, data):
         if wind_gust == "No Data":
             hass.log(f"No Wind Gust data found for {convert_time(hourly_data[hour]['dt'])} using default message", level="DEBUG")
 
-        rain = hourly_data[hour].get("rain", "No Data")  # TODO Need to check when it rains if this is formated correctly
+        rain = hourly_data[hour].get("rain", "No Data")
         if rain == "No Data":
             hass.log(f"No Rain data found for {convert_time(hourly_data[hour]['dt'])} using default message", level="DEBUG")
 
-        snow = hourly_data[hour].get("snow", "No Data")  # TODO format the same as rain
+        snow = hourly_data[hour].get("snow", "No Data")
         if snow == "No Data":
             hass.log(f"No Snow data found for {convert_time(hourly_data[hour]['dt'])} using default message", level="DEBUG")
 
@@ -58,8 +58,8 @@ def hourly_entities(hass, data):
                 "Wind gust": wind_gust,
                 "Wind degrees": hourly_data[hour]["wind_deg"],
                 "POP": hourly_data[hour]["pop"],
-                "Rain - 1h": rain,
-                "Snow - 1h": snow,
+                "Rain": rain,
+                "Snow": snow,
                 "Weather - ID": hourly_data[hour]["weather"][0]["id"],
                 "Weather - Main": hourly_data[hour]["weather"][0]["main"],
                 "Weather - Description": hourly_data[hour]["weather"][0]["description"],
