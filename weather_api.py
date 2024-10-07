@@ -47,6 +47,7 @@ def hourly_entities(hass, data):
             hass.set_state(f"sensor.open_weather_hour_{hour}", state=hourly_data[hour]["temp"], attributes={
                 "friendly_name": convert_time(hourly_data[hour]["dt"]),
                 "unit_of_measurement": "°C",
+                "icon": "mdi:thermometer",
                 "Feels like": hourly_data[hour]["feels_like"],
                 "Pressure": hourly_data[hour]["pressure"],
                 "Humidity": hourly_data[hour]["humidity"],
@@ -90,6 +91,7 @@ def daily_entities(hass, data):
             hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
                 "friendly_name": convert_time_date_only(daily_data[day]["dt"]),
                 "unit_of_measurement": "°C",
+                "icon": "mdi:thermometer",
                 "Sunrise": convert_time(daily_data[day]["sunrise"]),
                 "Sunset": convert_time(daily_data[day]["sunset"]),
                 "Moonrise": convert_time(daily_data[day]["moonrise"]),
