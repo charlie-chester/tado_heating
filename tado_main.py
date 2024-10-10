@@ -82,7 +82,7 @@ class TadoHeatControl(hass.Hass):
                 self.log(f"Morning: Minimum room temperature: {room_minimum_temp} C")
 
                 # Adjusts room temperature based on sunshine
-                if current_weather_id == 800 or current_weather_id == 801:
+                if 800 <= current_weather_id <= 802:
                     room_minimum_temp = room_minimum_temp - room_data["sun_correction"]
                     self.log(f"Sun Correction: {room_data['sun_correction']} C")
                     self.log(f"Minimum room temperature after sun correction: {room_minimum_temp} C")
