@@ -61,9 +61,9 @@ def hourly_entities(hass, data):
                 "POP": hourly_data[hour]["pop"],
                 "Rain": rain,
                 "Snow": snow,
-                "Weather - ID": hourly_data[hour]["weather"][0]["id"],
-                "Weather - Main": hourly_data[hour]["weather"][0]["main"],
-                "Weather - Description": hourly_data[hour]["weather"][0]["description"],
+                "Hourly Weather - ID": hourly_data[hour]["weather"][0]["id"],
+                "Hourly Weather - Main": hourly_data[hour]["weather"][0]["main"],
+                "Hourly Weather - Description": hourly_data[hour]["weather"][0]["description"],
             })
 
         except KeyError as e:
@@ -80,12 +80,17 @@ def hourly_entities(hass, data):
 def daily_entities(hass, data):
     daily_data = data["daily"]
     for day in range(0, 8):
+        wind_gusts = daily_data[day].get("wind_gust", "No Data")
+        if wind_gusts == "No Data":
+            hass.log(f"No Wind Gust data found for {convert_time_date_only(daily_data[day]['dt'])} using default message", level="DEBUG")
+
         rain = daily_data[day].get("rain", "No Data")
         if rain == "No Data":
             hass.log(f"No Rain data found for {convert_time_date_only(daily_data[day]['dt'])} using default message", level="DEBUG")
 
-        # TODO Need to add snow data
-        # Need to check other missing entries
+        snow = daily_data[day].get("snow", "No Data")
+        if snow == "No Data":
+            hass.log(f"No Snow data found for {convert_time_date_only(daily_data[day]['dt'])} using default message", level="DEBUG")
 
         try:
             hass.set_state(f"sensor.open_weather_day_{day}", state=daily_data[day]["temp"]["day"], attributes={
@@ -112,15 +117,20 @@ def daily_entities(hass, data):
                 "Humidity": daily_data[day]["humidity"],
                 "Dew point": daily_data[day]["dew_point"],
                 "Wind speed": daily_data[day]["wind_speed"],
+                "Wind Gusts": wind_gusts,
                 "Wind degrees": daily_data[day]["wind_deg"],
                 "Wind gust": daily_data[day]["wind_gust"],
                 "Weather - ID": daily_data[day]["weather"][0]["id"],
                 "Weather - Main": daily_data[day]["weather"][0]["main"],
                 "Weather - Description": daily_data[day]["weather"][0]["description"],
                 "Clouds": daily_data[day]["clouds"],
+                "UVI": daily_data[day]["uvi"],
                 "POP": daily_data[day]["pop"],
                 "Rain": rain,
-                "UVI": daily_data[day]["uvi"],
+                "Snow": snow,
+                "Daily Weather - ID": daily_data[day]["weather"][0]["id"],
+                "Daily Weather - Main": daily_data[day]["weather"][0]["main"],
+                "Daily Weather - Description": daily_data[day]["weather"][0]["description"],
             })
         except KeyError as e:
             missing_key = str(e).strip("'")
